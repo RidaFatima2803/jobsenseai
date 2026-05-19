@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  clerkUserId   String   @unique
+  createdAt     DateTime @default(now())
+
+  activities ActivityLog[]
+  features   FeatureUsage[]
+}
+
+model ActivityLog {
+  id        String   @id @default(uuid())
+  userId    String
+  action    String
+  timestamp DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model FeatureUsage {
+  id          String @id @default(uuid())
+  userId      String
+  featureName String
+  usageCount  Int    @default(0)
+  score       Int?
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, featureName])
+}
