@@ -3,7 +3,11 @@ export async function POST(req) {
     const body = await req.json();
 
     const query = body.query || "Frontend Developer Pakistan";
-
+    console.log("Rapid Key Exists:", !!process.env.RAPIDAPI_KEY);
+    console.log(
+      "Rapid Key Start:",
+       process.env.RAPIDAPI_KEY?.substring(0, 8)
+    );
     const response = await fetch(
       `https://jsearch.p.rapidapi.com/search-v2?query=${encodeURIComponent(
         query
@@ -19,6 +23,7 @@ export async function POST(req) {
 
     const data = await response.json();
 
+    console.log("Response Status:", response.status);
     console.log("FULL API RESPONSE:", data);
 
     if (!response.ok) {
